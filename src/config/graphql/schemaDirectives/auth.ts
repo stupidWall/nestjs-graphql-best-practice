@@ -10,6 +10,7 @@ class AuthDirective extends SchemaDirectiveVisitor {
 
 		field.resolve = function(...args) {
 			const { currentUser } = args[2]
+			console.log('auth directive currentUser: ', currentUser)
 
 			if (!currentUser) {
 				throw new AuthenticationError(

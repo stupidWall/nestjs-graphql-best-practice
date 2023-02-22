@@ -153,7 +153,6 @@ export class GraphqlService implements GqlOptionsFactory {
 						Logger.debug(`🔗  Connected to websocket`, 'GraphQL')
 
 					let currentUser
-
 					const token = connectionParams[ACCESS_TOKEN!]
 
 					if (token) {

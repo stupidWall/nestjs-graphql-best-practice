@@ -14,18 +14,22 @@
 
 ## Table of Contents
 
-- [Structure](#structure)
-- [Function](#function)
-- [Usage](#usage)
-- [Starting the Server](#starting-the-server)
-- [Node.js Best Practices](#nodejs-best-practices)
-  - [1. Project Structure Practices](#1-project-structure-practices)
-  - [2. Error Handling Practices](#2-error-handling-practices)
-  - [3. Code Style Practices](#3-code-style-practices)
-  - [4. Testing And Overall Quality Practices](#4-testing-and-overall-quality-practices)
-  - [5. Going To Production Practices](#5-going-to-production-practices)
-  - [6. Security Best Practices](#6-security-best-practices)
-  - [7. Performance Best Practices](#7-performance-best-practices)
+- [Nestjs GraphQL Best Practice](#nestjs-graphql-best-practice)
+  - [Version 7.5.0](#version-750)
+  - [Table of Contents](#table-of-contents)
+  - [Structure](#structure)
+  - [Function](#function)
+  - [Usage](#usage)
+  - [Starting the Server](#starting-the-server)
+  - [Node.js Best Practices](#nodejs-best-practices)
+    - [1. Project Structure Practices](#1-project-structure-practices)
+    - [2. Error Handling Practices](#2-error-handling-practices)
+    - [3. Code Style Practices](#3-code-style-practices)
+    - [4. Testing And Overall Quality Practices](#4-testing-and-overall-quality-practices)
+    - [5. Going To Production Practices](#5-going-to-production-practices)
+    - [6. Security Best Practices](#6-security-best-practices)
+    - [7. Performance Best Practices](#7-performance-best-practices)
+  - [Docs](#docs)
 
 ## Structure
 
@@ -307,3 +311,17 @@ Our contributors are working on this section. [Would you like to join?](https://
 [✔️] 7.1. Prefer native JS methods over user-land utils like Lodash
 
 [❔] 7.2. Use Fastify in place of Express
+
+
+
+## Docs
+- [body-parse middleware](./docs/bodyparse.md)
+- [compression](./docs/compression.md)
+- [e2e](./docs/e2e.md)
+- [gracefully shut down](./docs/gracefully_shut_down.md)
+- [interceptors](./docs/interceptor.md)
+- [limit rate](./docs/limit-rate.md)
+- [logger](./docs/logger.md)
+- [security](./docs/security.md)
+- [validator](./docs/validator.md)
+- [user module](./docs/user.md)

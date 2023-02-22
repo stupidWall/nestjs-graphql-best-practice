@@ -2,23 +2,18 @@ import { Injectable, Logger } from '@nestjs/common'
 import { GqlOptionsFactory, GqlModuleOptions } from '@nestjs/graphql'
 import { MemcachedCache } from 'apollo-server-cache-memcached'
 import { PubSub } from 'graphql-subscriptions'
-// import { join } from 'path'
 import { GraphQLExtension, AuthenticationError } from 'apollo-server-core'
 import { MockList } from 'graphql-tools'
 import GraphQLJSON, { GraphQLJSONObject } from 'graphql-type-json'
 import * as depthLimit from 'graphql-depth-limit'
-// import { fileLoader, mergeTypes } from 'merge-graphql-schemas'
-// import { buildFederatedSchema } from '@apollo/federation'
-// import { ApolloGateway } from '@apollo/gateway'
+
 import { getMongoRepository } from 'typeorm'
 import * as chalk from 'chalk'
-// import responseCachePlugin from 'apollo-server-plugin-response-cache'
 
 import schemaDirectives from './schemaDirectives'
 import directiveResolvers from './directiveResolvers'
 import { verifyToken } from '@auth'
 import { User } from '@entities'
-// import { logger } from '../../common'
 
 import {
 	NODE_ENV,
@@ -29,67 +24,21 @@ import {
 	ACCESS_TOKEN
 } from '@environments'
 
-// const gateway = new ApolloGateway({
-// 	serviceList: [
-// 		{ name: 'accounts', url: 'http://localhost:11041/graphql' },
-// 		{ name: 'reviews', url: 'http://localhost:14042/graphql' },
-// 		{ name: 'products', url: 'http://localhost:11043/graphql' },
-// 		{ name: 'inventory', url: 'http://localhost:11044/graphql' }
-// 	]
-// })
-
 const pubsub = new PubSub()
-// class MyErrorTrackingExtension extends GraphQLExtension {
-//   willSendResponse(o) {
-//     const { context, graphqlResponse } = o;
-
-//     context.trackErrors(graphqlResponse.errors);
-
-//     return o;
-//   }
-//   // Other lifecycle methods include
-//   // requestDidStart
-//   // parsingDidStart
-//   // validationDidStart
-//   // executionDidStart
-//   // willSendResponse
-// }
-
 @Injectable()
 export class GraphqlService implements GqlOptionsFactory {
-	async createGqlOptions(): Promise<GqlModuleOptions> {
-		// const { schema, executor } = await gateway.load()
-		// const typeDefs = mergeTypes(fileLoader(`./**/*.graphql`), {
-		// 	all: true
-		// })
-
-		// console.log(typeDefs)
+	async createGqlOptions(): Promise<any> {
 		return {
-			// schema,
-			// executor,
-			// schema: buildFederatedSchema([
-			// 	{
-			// 		typeDefs,
-			// 		resolvers: {
-			// 			JSON: GraphQLJSON,
-			// 			JSONObject: GraphQLJSONObject
-			// 		}
-			// 	}
-			// ]),
 			typePaths: ['./**/*.graphql'],
 			resolvers: {
 				JSON: GraphQLJSON,
 				JSONObject: GraphQLJSONObject
 			},
-			// extensions: [() => new MyErrorTrackingExtension()],
 			mocks: NODE_ENV === 'testing' && {
 				// String: () => 'Chnirt',
 				Query: () => ({
 					users: () => new MockList([2, 6])
 				})
-			},
-			resolverValidationOptions: {
-				requireResolversForResolveType: false
 			},
 			path: `/${END_POINT!}`,
 			cors:
@@ -104,16 +53,12 @@ export class GraphqlService implements GqlOptionsFactory {
 				return new Promise((resolve, reject) => {
 					// Replace the `true` in this conditional with more specific checks!
 					if (true) {
-						resolve()
+						resolve(true)
 					} else {
 						reject()
 					}
 				})
 			},
-			// definitions: {
-			// 	path: join(process.cwd(), 'src/graphql.ts'),
-			// 	outputAs: 'class'
-			// },
 			schemaDirectives,
 			directiveResolvers,
 			validationRules: [
@@ -136,22 +81,16 @@ export class GraphqlService implements GqlOptionsFactory {
 			introspection: true,
 			playground: NODE_ENV !== 'production' && {
 				settings: {
-					'editor.cursorShape': 'underline', // possible values: 'line', 'block', 'underline'
+					'editor.cursorShape': 'line', // possible values: 'line', 'block', 'underline'
 					'editor.fontFamily': `'Source Code Pro', 'Consolas', 'Inconsolata', 'Droid Sans Mono', 'Monaco', monospace`,
 					'editor.fontSize': 14,
 					'editor.reuseHeaders': true, // new tab reuses headers from last tab
 					'editor.theme': 'dark', // possible values: 'dark', 'light'
-					'general.betaUpdates': true,
+					'general.betaUpdates': false,
 					'queryPlan.hideQueryPlanResponse': false,
 					'request.credentials': 'include', // possible values: 'omit', 'include', 'same-origin'
-					'tracing.hideTracingResponse': false
+					'tracing.hideTracingResponse': true
 				}
-				// tabs: [
-				// 	{
-				// 		endpoint: END_POINT,
-				// 		query: '{ hello }'
-				// 	}
-				// ]
 			},
 			tracing: NODE_ENV !== 'production',
 			cacheControl: NODE_ENV === 'production' && {
@@ -195,17 +134,6 @@ export class GraphqlService implements GqlOptionsFactory {
 				}
 			},
 			formatError: error => {
-				// console.log(error)
-				// if (error.originalError instanceof AuthenticationError) {
-				// 	return new Error('Different authentication error message!')
-				// }
-
-				// if (error.originalError instanceof ForbiddenError) {
-				// 	return new Error('Different forbidden error message!')
-				// }
-
-				// logger.error(error.message)
-
 				return {
 					message: error.message,
 					code: error.extensions && error.extensions.code,

@@ -21,9 +21,9 @@ const GRAPHQL_DEPTH_LIMIT: number = +process.env.GRAPHQL_DEPTH_LIMIT || 3
 const STATIC: string = process.env.STATIC || 'static'
 
 // mlab
-const MLAB_USER = process.env.MLAB_USER || 'admin'
-const MLAB_PASS = process.env.MLAB_PASS || 'chnirt1803'
-const MLAB_HOST = process.env.MLAB_HOST || 'cluster0.eoxxs.mongodb.net'
+const MLAB_USER = process.env.MLAB_USER || ''
+const MLAB_PASS = process.env.MLAB_PASS || ''
+const MLAB_HOST = process.env.MLAB_HOST || ''
 const MLAB_PORT = +process.env.MLAB_PORT || 47420
 const MLAB_DATABASE = process.env.MLAB_DATABASE || 'nestjs-v7'
 const MLAB_URL =

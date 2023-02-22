@@ -37,6 +37,7 @@ import { generateToken, verifyToken, tradeToken } from '@auth'
 import { sendMail, stripe } from '@shared'
 
 import { USER_SUBSCRIPTION, STRIPE_PLAN } from '@environments'
+import { Logger } from '@nestjs/common'
 
 @Resolver('User')
 export class UserResolver {
@@ -48,7 +49,6 @@ export class UserResolver {
 	@Query()
 	async hello(): Promise<string> {
 		return uuidv4()
-		// return await 'world'
 	}
 
 	@Query()
@@ -211,6 +211,8 @@ export class UserResolver {
 				type: Type.VERIFY_EMAIL
 			})
 
+			Logger.log(emailToken, '')
+
 			await sendMail(
 				'verifyEmail',
 				createdUser,
@@ -326,13 +328,15 @@ export class UserResolver {
 		// console.log(user);
 
 		if (!user.isVerified) {
-			const updateUser = await getMongoRepository(User).save(
-				new User({
-					...user,
-					isVerified: true
-				})
+			const result = await getMongoRepository(User).updateOne(
+				{
+					_id: user._id
+				},
+				{
+					$set: { isVerified: true }
+				}
 			)
-			return updateUser ? true : false
+			return result.modifiedCount === 1
 		} else {
 			throw new ForbiddenError('Your email has been verified.')
 		}

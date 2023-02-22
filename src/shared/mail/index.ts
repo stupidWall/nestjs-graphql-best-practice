@@ -148,7 +148,7 @@ export const sendMail = async (
 				console.log(err)
 				// Logger.error(err.message)
 			} else {
-				console.log('Message sent: ' + JSON.parse(info))
+				console.log('Message sent: ' + JSON.parse(info as any))
 				// Logger.debug(info.response.message, 'Nodemailer')
 			}
 		})

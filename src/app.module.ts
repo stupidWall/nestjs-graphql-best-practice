@@ -6,7 +6,7 @@ import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import * as Resolvers from './resolvers'
 import { GraphqlService, TypeOrmService, CacheService } from './config'
-import { DateScalar, UploadScalar } from './config/graphql/scalars'
+import { DateScalar } from './config/graphql/scalars'
 
 @Module({
 	imports: [
@@ -22,6 +22,6 @@ import { DateScalar, UploadScalar } from './config/graphql/scalars'
 		ScheduleModule.forRoot()
 	],
 	controllers: [AppController],
-	providers: [AppService, ...Object.values(Resolvers), DateScalar, UploadScalar]
+	providers: [AppService, ...Object.values(Resolvers), DateScalar]
 })
 export class AppModule {}

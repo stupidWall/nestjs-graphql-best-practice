@@ -20,7 +20,7 @@ export class FileResolver {
 	async uploadFile(@Args('file') file: any): Promise<File> {
 		const { filename } = file
 
-		console.log(file)
+		console.log('uploadFile file', file)
 
 		const path = await uploadFile(file)
 

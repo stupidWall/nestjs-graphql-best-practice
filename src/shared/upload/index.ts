@@ -33,9 +33,9 @@ export const uploadFile = async (file: any): Promise<string> => {
 			.pipe(
 				cloudinary.v2.uploader.upload_stream(
 					{
-						folder: 'chnirt',
+						folder: 'bode',
 						public_id: uniqueFilename,
-						tags: 'chnirt'
+						tags: 'bode'
 					}, // directory and tags are optional
 					(err, image) => {
 						if (err) {

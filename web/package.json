@@ -1,0 +1,23 @@
+{
+  "private": true,
+  "author": "Bode He <bode_he@epam.com>",
+  "scripts": {
+    "dev": "umi dev",
+    "build": "umi build",
+    "postinstall": "umi setup",
+    "setup": "umi setup",
+    "start": "npm run dev"
+  },
+  "dependencies": {
+    "@ant-design/icons": "^5.0.1",
+    "@apollo/client": "^3.7.9",
+    "antd": "^5.2.2",
+    "graphql": "^16.6.0",
+    "umi": "^4.0.52"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "typescript": "^4.1.2"
+  }
+}

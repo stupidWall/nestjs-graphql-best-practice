@@ -101,12 +101,11 @@ export class UserResolver {
 		})
 
 		// tslint:disable-next-line:prefer-conditional-expression
-		if (result.length > 1) {
-			result = { users: result }
-		} else {
+		if (result.length === 1) {
 			result = result[0]
+		} else {
+			result = { users: result }
 		}
-
 		return result
 	}
 
@@ -211,7 +210,7 @@ export class UserResolver {
 				type: Type.VERIFY_EMAIL
 			})
 
-			Logger.log(emailToken, '')
+			console.log('emailToken', emailToken)
 
 			await sendMail(
 				'verifyEmail',
@@ -241,15 +240,20 @@ export class UserResolver {
 				throw new ForbiddenError('User not found.')
 			}
 
-			const updateUser = await await getMongoRepository(User).save(
-				new User({
-					...user,
-					...input,
-					local: {
-						email: user.local.email,
-						password: await hashPassword(password)
+			const updateUser = await await getMongoRepository(User).updateOne(
+				{
+					_id: _id
+				},
+				{
+					$set: {
+						...user,
+						...input,
+						local: {
+							email: user.local.email,
+							password: await hashPassword(password)
+						}
 					}
-				})
+				}
 			)
 
 			return updateUser ? true : false
@@ -272,11 +276,18 @@ export class UserResolver {
 
 			const newFile = await this.fileResolver.uploadFile(file)
 
-			const updateUser = await getMongoRepository(User).save(
-				new User({
-					...user,
-					avatar: newFile.path
-				})
+			console.log('newFile', newFile)
+
+			const updateUser = await getMongoRepository(User).updateOne(
+				{
+					_id
+				},
+				{
+					$set: {
+						...user,
+						avatar: newFile.path
+					}
+				}
 			)
 
 			return updateUser ? true : false
@@ -420,13 +431,17 @@ export class UserResolver {
 			)
 		}
 
-		const updateUser = await getMongoRepository(User).save(
-			new User({
-				...user,
-				local: {
-					password: await hashPassword(password)
+		const updateUser = await getMongoRepository(User).updateOne(
+			{
+				_id
+			},
+			{
+				$set: {
+					local: {
+						password: await hashPassword(password)
+					}
 				}
-			})
+			}
 		)
 
 		return updateUser ? true : false
@@ -467,12 +482,17 @@ export class UserResolver {
 
 		const date = new Date()
 
-		const updateUser = await getMongoRepository(User).save(
-			new User({
-				...user,
-				resetPasswordToken: resetPassToken,
-				resetPasswordExpires: date.setHours(date.getHours() + 1) // 1 hour
-			})
+		const updateUser = await getMongoRepository(User).updateOne(
+			{
+				_id: user._id
+			},
+			{
+				$set: {
+					...user,
+					resetPasswordToken: resetPassToken,
+					resetPasswordExpires: date.setHours(date.getHours() + 1) // 1 hour
+				}
+			}
 		)
 
 		return updateUser ? true : false
@@ -497,16 +517,21 @@ export class UserResolver {
 			)
 		}
 
-		const updateUser = await getMongoRepository(User).save(
-			new User({
-				...user,
-				local: {
-					email: user.local.email,
-					password: await hashPassword(password)
-				},
-				resetPasswordToken: null,
-				resetPasswordExpires: null
-			})
+		const updateUser = await getMongoRepository(User).updateOne(
+			{
+				_id: user._id
+			},
+			{
+				$set: {
+					...user,
+					local: {
+						email: user.local.email,
+						password: await hashPassword(password)
+					},
+					resetPasswordToken: null,
+					resetPasswordExpires: null
+				}
+			}
 		)
 
 		return updateUser ? true : false
@@ -622,6 +647,7 @@ export class UserResolver {
 	@ResolveField()
 	async fullName(@Parent() user: User): Promise<string> {
 		const { firstName, lastName } = user
+		console.log('ResolveField fullName', firstName, lastName)
 		return `${firstName} ${lastName}`
 	}
 

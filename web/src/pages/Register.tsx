@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, Input, Button, Radio, message } from "antd";
+import { Form, Input, Button, Radio, message, Row } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { gql, useMutation } from '@apollo/client'
 import { useNavigate } from 'umi';
@@ -14,8 +14,15 @@ const REGISTER_ACTION = gql`
             local {
                 email
             }
-            gender
+            gender,
+            emailToken
         }
+    }
+`
+
+const VERIFY_EMAIL_TOKEN = gql`
+    mutation VerifyEmailToken($token: String!) {
+      verifyEmail(emailToken: $token)
     }
 `
 
@@ -31,14 +38,14 @@ const tailLayout = {
 const RegisterPage: React.FC = () => {
   const naviagte = useNavigate()
   const [createUser, {data: submitResult, loading: submiting, error}] = useMutation(REGISTER_ACTION)
+  const [verifyEmail, {data: verifyResult, loading: verifing}] = useMutation(VERIFY_EMAIL_TOKEN)
   const [form] = Form.useForm();
 
   const onFinish = async (values: any) => {
     try {
         await createUser({ variables: { input: values }})
         form.resetFields()
-        message.success('Registered Successfully')
-        naviagte('/login')
+        message.success('Registered Successfully! Please verfiy email!', 5)
     } catch (error) {
       console.log(error)  
     }
@@ -47,6 +54,24 @@ const RegisterPage: React.FC = () => {
   const onFinishFailed = (errorInfo: any) => {
     console.log("Failed:", errorInfo);
   };
+
+  console.log('submitResult', submitResult)
+
+  if (submitResult?.createUser?.emailToken) {
+    return (
+      <Row justify="center" align="middle" style={{ maxWidth: "500px", margin: "0 auto", height: 100 }}>
+        <Button type="primary" onClick={async () => {
+          try {
+            await verifyEmail({ variables: { token: submitResult.createUser.emailToken } })
+            message.success('Verify email Successfully!', 5)
+            naviagte('/login')
+          } catch (error) {
+            console.log(error)
+          }
+        }}>Verify Email</Button>
+      </Row>
+    )
+  }
 
   return (
     <div style={{ maxWidth: "500px", margin: "0 auto" }}>

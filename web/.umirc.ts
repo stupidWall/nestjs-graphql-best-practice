@@ -2,9 +2,13 @@ import { defineConfig } from 'umi'
 
 export default defineConfig({
 	routes: [
-		{ path: '/', component: 'index' },
+		{ path: '/', component: 'index', wrappers: ['@/wrappers/auth'] },
 		{ path: '/register', component: 'Register' },
 		{ path: '/login', component: 'Login' }
 	],
-	npmClient: 'yarn'
+	npmClient: 'yarn',
+	alias: {
+		['@']: '/src'
+	},
+	mfsu: {}
 })

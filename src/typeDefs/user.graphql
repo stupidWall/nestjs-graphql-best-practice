@@ -119,6 +119,7 @@ type User {
 	ccLast4: String
 	createdAt: Float!
 	updatedAt: Float!
+	emailToken: String
 }
 
 type Query {

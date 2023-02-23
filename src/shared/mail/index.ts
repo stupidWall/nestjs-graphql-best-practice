@@ -37,10 +37,9 @@ export const sendMail = async (
 	_id: string
 ): Promise<any> => {
 	const transporter = await nodemailer.createTransport({
-		service: 'gmail',
 		secure: false, // true
-		host: 'smtp.gmail.com',
-		port: 587, // 465
+		host: 'smtp.163.com',
+		port: 25, // 465
 		auth: {
 			user: NODEMAILER_USER,
 			pass: NODEMAILER_PASS
@@ -145,7 +144,7 @@ export const sendMail = async (
 
 		transporter.sendMail(mailOptions, (err, info) => {
 			if (err) {
-				console.log(err)
+				console.log('Message error', err)
 				// Logger.error(err.message)
 			} else {
 				console.log('Message sent: ' + JSON.parse(info as any))

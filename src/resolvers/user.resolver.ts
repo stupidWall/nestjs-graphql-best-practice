@@ -150,7 +150,7 @@ export class UserResolver {
 		@Args('input') input: CreateUserInput,
 		@Context('pubsub') pubsub: any,
 		@Context('req') req: any
-	): Promise<User> {
+	): Promise<User & { emailToken?: string }> {
 		try {
 			const { email, password } = input
 
@@ -220,7 +220,10 @@ export class UserResolver {
 				existedEmail._id
 			)
 
-			return createdUser
+			return {
+				...createdUser,
+				emailToken
+			}
 		} catch (error) {
 			throw new ApolloError(error)
 		}
@@ -647,7 +650,6 @@ export class UserResolver {
 	@ResolveField()
 	async fullName(@Parent() user: User): Promise<string> {
 		const { firstName, lastName } = user
-		console.log('ResolveField fullName', firstName, lastName)
 		return `${firstName} ${lastName}`
 	}
 

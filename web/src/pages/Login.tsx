@@ -3,7 +3,7 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { gql, useMutation } from '@apollo/client';
 import { useLocalStorageState } from 'ahooks';
 import { STORAGE_ACCESS_TOKEN_KEY, STORAGE_REFRESH_TOKEN_KEY } from '../constants';
-import { useNavigate } from 'umi';
+import { NavLink, useNavigate } from 'umi';
 import { useEffect } from 'react';
 
 const LOGIN_MUTATION = gql`
@@ -75,6 +75,8 @@ const LoginForm = () => {
             </Button>
         </Form.Item>
         </Form>
+
+        <NavLink to="/register">Register Account</NavLink>
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import useHeaderToken from '@/hooks/useHeaderToken';
-import { gql, useQuery } from '@apollo/client';
-import { Table } from 'antd';
+import { gql, useMutation, useQuery } from '@apollo/client';
+import { Button, message, Popconfirm, Table } from 'antd';
 
 const USER_FIELDS = gql`
   fragment UserFields on User {
@@ -39,16 +39,39 @@ const GET_USERS = gql`
   }
 `;
 
+const DELETE_USER = gql`
+  mutation DeleteUser($_id: ID!) {
+    deleteUser(_id: $_id)
+  }
+`;
+
 
 function UsersList() {
   const tokenHeaders = useHeaderToken()
-  const { loading, error, data } = useQuery(GET_USERS, {
+  const { loading, error, data, refetch: refreshUsers } = useQuery(GET_USERS, {
     variables: { offset: 0, limit: 10 },
+    ...tokenHeaders
+  });
+  const [deleteUser] = useMutation(DELETE_USER, {
+    // 重新查询
+    refetchQueries: [{ query: GET_USERS }],
     ...tokenHeaders
   });
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
+
+  const handleDelete = (id: string) => {
+    deleteUser({ variables: { _id: id } })
+      .then(() => {
+        message.success('User deleted successfully');
+        refreshUsers()
+      })
+      .catch((error) => {
+        console.error(error);
+        message.error('Failed to delete user');
+      });
+  };
 
   const columns = [
     {
@@ -87,6 +110,14 @@ function UsersList() {
       key: 'gender',
     },
     {
+      title: 'IsActive',
+      dataIndex: 'isActive',
+      key: 'isActive',
+      render: (text, record) => (
+        <span>{record.isActive ? 'true' : 'false'}</span>
+      ),
+    },
+    {
       title: 'Status',
       dataIndex: 'isActive',
       key: 'isActive',
@@ -94,6 +125,20 @@ function UsersList() {
         <span>{record.isVerified ? 'Verified' : 'Not Verified'}</span>
       ),
     },
+    {
+        title: 'Action',
+        key: 'action',
+        render: (_, record) => record.isActive && (
+          <Popconfirm
+                title="Are you sure to delete this user?"
+                okText="Yes"
+                cancelText="No"
+                onConfirm={() => handleDelete(record._id)}
+            >
+            <Button size="small" danger>Delete</Button>
+          </Popconfirm>
+        )
+    }
   ];
 
   return (

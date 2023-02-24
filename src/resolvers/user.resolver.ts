@@ -308,11 +308,16 @@ export class UserResolver {
 				throw new ForbiddenError('User not found.')
 			}
 
-			const updateUser = await getMongoRepository(User).save(
-				new User({
-					...user,
-					isActive: false
-				})
+			const updateUser = await getMongoRepository(User).updateOne(
+				{
+					_id
+				},
+				{
+					$set: {
+						...user,
+						isActive: false
+					}
+				}
 			)
 
 			return updateUser ? true : false

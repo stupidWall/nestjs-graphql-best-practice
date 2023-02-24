@@ -102,6 +102,7 @@ export const verifyToken = async (
 ): Promise<User> => {
 	let currentUser
 
+	console.log('verify', token, type, common[type].privateKey)
 	await verify(token, common[type].privateKey, async (err, data) => {
 		if (err) {
 			throw new AuthenticationError(

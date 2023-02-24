@@ -52,6 +52,16 @@ function UsersList() {
 
   const columns = [
     {
+      title: 'ID',
+      dataIndex: '_id',
+      key: 'id',
+      render: (text, record) => (
+        <span>
+          {record._id}
+        </span>
+      ),
+    },
+    {
       title: 'Name',
       dataIndex: 'fullName',
       key: 'fullName',

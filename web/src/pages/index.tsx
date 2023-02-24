@@ -5,6 +5,8 @@ import { gql, useMutation, useQuery } from '@apollo/client';
 import JsonData from "@/components/JsonData";
 import { useState } from "react";
 import UsersList from "@/components/UserList";
+import useHeaderToken from "@/hooks/useHeaderToken";
+import GetUserById from "@/components/GetUserById";
 
 
 const REFRESH_GQL = gql`
@@ -40,19 +42,13 @@ const UPDATE_USER = gql`
 `
 
 const HomePage = () => {
-  const [accessToken, setAccessToken] = useLocalStorageState<string>(STORAGE_ACCESS_TOKEN_KEY, {
+  const [, setAccessToken] = useLocalStorageState<string>(STORAGE_ACCESS_TOKEN_KEY, {
     defaultValue: '',
   });
   const [refreshToken, setRefreshToken] = useLocalStorageState<string>(STORAGE_REFRESH_TOKEN_KEY, {
     defaultValue: '',
   });
-  const tokenHeaders = {
-    context: {
-      headers: {
-        token: accessToken
-      }
-    }
-  }
+  const tokenHeaders = useHeaderToken()
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [refreshTokenAction, { loading: refreshingToken, data: refreshTokenResult }] = useMutation(REFRESH_GQL)
@@ -150,6 +146,13 @@ const HomePage = () => {
           label: "Users",
           children: <>
             <UsersList />
+          </>
+        },
+        {
+          key: "getUserById",
+          label: "Get User By Id",
+          children: <>
+            <GetUserById />
           </>
         }
       ]}

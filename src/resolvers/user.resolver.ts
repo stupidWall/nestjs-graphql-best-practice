@@ -210,8 +210,6 @@ export class UserResolver {
 				type: Type.VERIFY_EMAIL
 			})
 
-			console.log('emailToken', emailToken)
-
 			await sendMail(
 				'verifyEmail',
 				createdUser,
@@ -401,12 +399,16 @@ export class UserResolver {
 				throw new ForbiddenError('User not found.')
 			}
 
-			const updateUser = await getMongoRepository(User).save(
-				new User({
-					...user,
-					reason: !user.isLocked ? reason : '',
-					isLocked: !user.isLocked
-				})
+			const updateUser = await getMongoRepository(User).updateOne(
+				{
+					_id
+				},
+				{
+					$set: {
+						reason: !user.isLocked ? reason : '',
+						isLocked: !user.isLocked
+					}
+				}
 			)
 
 			return updateUser ? true : false
@@ -446,6 +448,7 @@ export class UserResolver {
 			{
 				$set: {
 					local: {
+						email: user.local.email,
 						password: await hashPassword(password)
 					}
 				}

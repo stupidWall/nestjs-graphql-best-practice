@@ -7,6 +7,7 @@ import { useState } from "react";
 import UsersList from "@/components/UserList";
 import useHeaderToken from "@/hooks/useHeaderToken";
 import GetUserById from "@/components/GetUserById";
+import ChangePassword from "@/components/ChangePassword";
 
 
 const REFRESH_GQL = gql`
@@ -63,17 +64,6 @@ const HomePage = () => {
       destroyInactiveTabPane
       items={[
         {
-          key: "logout",
-          label: "Logout",
-          children: <>
-             <Button type="primary" size="small" onClick={() => {
-              setAccessToken('')
-              setRefreshToken('')
-              window.location.reload()
-            }}>Logout</Button>
-          </>
-        },
-        {
           key: "refreshToken",
           label: "Refresh Token",
           children: <>
@@ -110,6 +100,13 @@ const HomePage = () => {
                 }
               }}
             >Refresh</Button>
+          </>
+        },
+        {
+          key: "changePassword",
+          label: "Change Password",
+          children: <>
+            <ChangePassword userId={currentUser?.me?.['_id']} />
           </>
         },
         {
@@ -154,7 +151,18 @@ const HomePage = () => {
           children: <>
             <GetUserById />
           </>
-        }
+        },
+        {
+          key: "logout",
+          label: "Logout",
+          children: <>
+             <Button type="primary" size="small" onClick={() => {
+              setAccessToken('')
+              setRefreshToken('')
+              window.location.reload()
+            }}>Logout</Button>
+          </>
+        },
       ]}
     />
   </>;

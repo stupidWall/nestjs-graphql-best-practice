@@ -1,6 +1,6 @@
 import useHeaderToken from '@/hooks/useHeaderToken';
 import { gql, useMutation, useQuery } from '@apollo/client';
-import { Button, message, Popconfirm, Table } from 'antd';
+import { Button, message, Popconfirm, Space, Table } from 'antd';
 
 const USER_FIELDS = gql`
   fragment UserFields on User {
@@ -45,6 +45,12 @@ const DELETE_USER = gql`
   }
 `;
 
+const LOCK_UNLOCK_USER = gql`
+  mutation LockOrUnLockUser($_id: ID!, $reason: String!) {
+    lockAndUnlockUser(_id: $_id, reason: $reason)
+  }
+`;
+
 
 function UsersList() {
   const tokenHeaders = useHeaderToken()
@@ -53,8 +59,12 @@ function UsersList() {
     ...tokenHeaders
   });
   const [deleteUser] = useMutation(DELETE_USER, {
-    // 重新查询
+    // use for refrshing
     refetchQueries: [{ query: GET_USERS }],
+    ...tokenHeaders
+  });
+
+  const [lockAndUnlockUser] = useMutation(LOCK_UNLOCK_USER, {
     ...tokenHeaders
   });
 
@@ -70,6 +80,18 @@ function UsersList() {
       .catch((error) => {
         console.error(error);
         message.error('Failed to delete user');
+      });
+  };
+
+  const handleLockOrUnLock = (id: string) => {
+    lockAndUnlockUser({ variables: { _id: id, reason: 'risk consideration' } })
+      .then(() => {
+        message.success('Submit successfully');
+        refreshUsers()
+      })
+      .catch((error) => {
+        console.error(error);
+        message.error('Failed to submit');
       });
   };
 
@@ -129,26 +151,43 @@ function UsersList() {
         title: 'Action',
         key: 'action',
         render: (_, record) => record.isActive && (
-          <Popconfirm
-                title="Are you sure to delete this user?"
-                okText="Yes"
-                cancelText="No"
-                onConfirm={() => handleDelete(record._id)}
-            >
-            <Button size="small" danger>Delete</Button>
-          </Popconfirm>
+          <Space>
+            <Popconfirm
+                    title="Are you sure to delete this user?"
+                    okText="Yes"
+                    cancelText="No"
+                    onConfirm={() => handleDelete(record._id)}
+                >
+                <Button size="small" danger>Delete</Button>
+            </Popconfirm>
+            <Popconfirm
+                    title={`Are you sure to ${record.isLocked ? 'unlock' : 'lock'} this user?`}
+                    okText="Yes"
+                    cancelText="No"
+                    onConfirm={() => handleLockOrUnLock(record._id)}
+                >
+                <Button size="small" danger={!record.isLocked}>{record.isLocked ? 'Un' : ''}Lock</Button>
+            </Popconfirm>
+          </Space>
         )
     }
   ];
 
   return (
-    <Table
-      size='small'
-      columns={columns}
-      dataSource={data?.users}
-      rowKey="_id"
-      pagination={{ pageSize: 10 }}
-    />
+    <>
+        <Button type="primary" size="small" onClick={() => refreshUsers()}>
+            Refresh
+        </Button>
+        <Table
+            bordered
+            showHeader
+            size='small'
+            columns={columns}
+            dataSource={data?.users}
+            rowKey="_id"
+            pagination={{ pageSize: 10 }}
+        />
+    </>
   );
 }
 

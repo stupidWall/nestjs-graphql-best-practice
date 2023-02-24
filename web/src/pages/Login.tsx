@@ -4,6 +4,7 @@ import { gql, useMutation } from '@apollo/client';
 import { useLocalStorageState } from 'ahooks';
 import { STORAGE_ACCESS_TOKEN_KEY, STORAGE_REFRESH_TOKEN_KEY } from '../constants';
 import { useNavigate } from 'umi';
+import { useEffect } from 'react';
 
 const LOGIN_MUTATION = gql`
   mutation Login($input: LoginUserInput!) {
@@ -35,17 +36,19 @@ const LoginForm = () => {
           }
         },
       });
-      const { accessToken, refreshToken } = submitResult?.login || {}
-      setAccessToken(accessToken)
-      setRefreshToken(refreshToken)
-      message.success('Login successfully');
-      setTimeout(() => {
-        navigate('/')
-      })
     } catch (error: any) {
       message.error(error.message);
     }
   };
+
+  useEffect(() => {
+    if (!submitResult) return
+    const { accessToken, refreshToken } = submitResult?.login || {}
+    accessToken && setAccessToken(accessToken)
+    refreshToken && setRefreshToken(refreshToken)
+    message.success('Login successfully');
+    navigate('/')
+  }, [submitResult])
 
   return (
     <div style={{ maxWidth: "500px", margin: "0 auto" }}>

@@ -1,6 +1,6 @@
 import { Link, Outlet } from 'umi';
-import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
-import useClient from '@/models/graphql-client';
+import {  ApolloProvider } from '@apollo/client';
+import useClient from '@/hooks/graphql-client';
 
 export default function Layout() {
   const {client} = useClient()

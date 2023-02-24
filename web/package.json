@@ -9,7 +9,6 @@
     "start": "npm run dev"
   },
   "dependencies": {
-    "@ant-design/icons": "^5.0.1",
     "@apollo/client": "^3.7.9",
     "ahooks": "^3.7.4",
     "antd": "^5.2.2",

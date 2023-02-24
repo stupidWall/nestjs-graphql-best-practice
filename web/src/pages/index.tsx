@@ -8,6 +8,7 @@ import UsersList from "@/components/UserList";
 import useHeaderToken from "@/hooks/useHeaderToken";
 import GetUserById from "@/components/GetUserById";
 import ChangePassword from "@/components/ChangePassword";
+import ForgetPassword from "@/components/ForgetPassword";
 
 
 const REFRESH_GQL = gql`
@@ -150,6 +151,13 @@ const HomePage = () => {
           label: "Get User By Id",
           children: <>
             <GetUserById />
+          </>
+        },
+        {
+          key: "forgetPassword",
+          label: "Forget Password",
+          children: <>
+            <ForgetPassword currentUserEmail={currentUser?.me?.local?.email} />
           </>
         },
         {

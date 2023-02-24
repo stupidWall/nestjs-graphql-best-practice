@@ -30,6 +30,7 @@ import {
 	UserResult,
 	LoginResponse,
 	RefreshTokenResponse,
+	ForgetPasswordResponse,
 	Type,
 	UserType
 } from '../generator/graphql.schema'
@@ -462,7 +463,7 @@ export class UserResolver {
 	async forgotPassword(
 		@Args('email') email: string,
 		@Context('req') req: any
-	): Promise<boolean> {
+	): Promise<ForgetPasswordResponse> {
 		const user = await getMongoRepository(User).findOne({
 			where: {
 				'local.email': email,
@@ -506,7 +507,13 @@ export class UserResolver {
 			}
 		)
 
-		return updateUser ? true : false
+		return updateUser
+			? {
+					resetPasswordToken: resetPassToken
+			  }
+			: {
+					resetPasswordToken: ''
+			  }
 	}
 
 	@Mutation()

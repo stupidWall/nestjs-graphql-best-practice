@@ -72,6 +72,10 @@ type RefreshTokenResponse {
 	accessToken: String!
 }
 
+type ForgetPasswordResponse {
+	resetPasswordToken: String!
+}
+
 type Local {
 	email: String
 	password: String
@@ -158,7 +162,7 @@ type Mutation {
 		currentPassword: String!
 		password: String!
 	): Boolean @isAuthenticated
-	forgotPassword(email: String!): Boolean
+	forgotPassword(email: String!): ForgetPasswordResponse
 	resetPassword(resetPasswordToken: String!, password: String!): Boolean
 	createSubscription(source: String!, ccLast4: String!): User @isAuthenticated
 	changeCreditCard(source: String!, ccLast4: String!): User @isAuthenticated
